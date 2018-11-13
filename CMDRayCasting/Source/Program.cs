@@ -10,6 +10,7 @@ namespace CMDRayCasting
     {
         static void Main(string[] args)
         {
+            GameCore gc = new GameCore();
         }
     }
 }

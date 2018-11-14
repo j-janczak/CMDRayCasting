@@ -14,7 +14,7 @@ namespace CMDRayCasting
         {
             rc = new RayCasting();
             rc.Create();
-            rc.Render();
+            while (true) rc.Render();
         }
 
         public interface IGameCore

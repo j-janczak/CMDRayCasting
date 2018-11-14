@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\GameCore.cs" />
+    <Compile Include="Source\Hero.cs" />
     <Compile Include="Source\RayCasting.cs" />
     <Compile Include="Source\Map.cs" />
     <Compile Include="Source\Program.cs" />

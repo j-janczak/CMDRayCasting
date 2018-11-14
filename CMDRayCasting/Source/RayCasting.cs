@@ -9,18 +9,27 @@ namespace CMDRayCasting
     class RayCasting : GameCore.IGameCore
     {
         Map map;
-        RenderMap renderMap;
+        Hero hero;
+        Renders.RenderMap renderMap;
 
         public void Create()
         {
             map = new Map();
-            renderMap = new RenderMap(map);
+            hero = new Hero();
+            renderMap = new Renders.RenderMap(map);
+            renderMap.ConnectWithHero(hero);
         }
 
         public void Render()
         {
+        
             renderMap.Show();
-            Console.ReadKey();
+            char key = Console.ReadKey().KeyChar;
+
+            if (key == 'd') hero.x++;
+            if (key == 'a') hero.x--;
+            if (key == 'w') hero.y--;
+            if (key == 's') hero.y++;
         }
     }
 }

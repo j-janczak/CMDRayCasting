@@ -8,7 +8,7 @@ namespace CMDRayCasting
 {
     class Hero
     {
-        public int x = 25;
+        public int x = 12;
         public int y = 12;
         public char mark = '@';
 

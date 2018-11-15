@@ -49,7 +49,7 @@
     <Compile Include="Source\Map.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Source\RayCasting.cs" />
-    <Compile Include="Source\Render3D.cs" />
+    <Compile Include="Source\Renders\Render3D.cs" />
     <Compile Include="Source\Renders\Render2D.cs" />
   </ItemGroup>
   <ItemGroup>

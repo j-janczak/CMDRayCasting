@@ -10,26 +10,43 @@ namespace CMDRayCasting
     {
         Map map;
         Hero hero;
-        Renders.RenderMap renderMap;
+        Renders.Render2D renderMap;
+        Renders.Render3D render3D;
+        int a = 0;
 
         public void Create()
         {
             map = new Map();
             hero = new Hero();
-            renderMap = new Renders.RenderMap(map);
-            renderMap.ConnectWithHero(hero);
+            renderMap = new Renders.Render2D(map, hero);
+            render3D = new Renders.Render3D(map, hero);
         }
 
         public void Render()
         {
-        
-            renderMap.Show();
+
+
+            render3D.Show();
+
+            /*renderMap.DrawLine(endX, endY);
+            renderMap.Show();*/
+
+
             char key = Console.ReadKey().KeyChar;
 
-            if (key == 'd') hero.x++;
-            if (key == 'a') hero.x--;
-            if (key == 'w') hero.y--;
-            if (key == 's') hero.y++;
+            if (key == 'w') hero.x++;
+            if (key == 's') hero.x--;
+            if (key == 'a')
+            {
+                if (hero.y > 2) hero.y--;
+            }
+            if (key == 'd')
+            {
+                if (hero.y < map.mapHeight - 3) hero.y++;
+            }
+
+            if (key == 'k') hero.direction += 5;
+            if (key == 'l') hero.direction -= 5;
         }
     }
 }

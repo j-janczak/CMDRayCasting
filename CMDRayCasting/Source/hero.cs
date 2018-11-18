@@ -10,7 +10,7 @@ namespace CMDRayCasting
     {
         public int x = 17;
         public int y = 12;
-        public int direction = 0;
+        public int direction = 90;
         public char mark = '@';
 
         public Hero() { }

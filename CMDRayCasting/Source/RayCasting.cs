@@ -8,6 +8,8 @@ namespace CMDRayCasting
 {
     class RayCasting : GameCore.IGameCore
     {
+        public static int SCREEN_WIDTH = 100;
+        public static int SCREEN_HEIGHT = 50;
         Map map;
         Hero hero;
         Renders.Render2D renderMap;
@@ -20,25 +22,13 @@ namespace CMDRayCasting
             hero = new Hero();
             renderMap = new Renders.Render2D(map, hero);
             render3D = new Renders.Render3D(map, hero);
-            Console.WindowHeight = 50;
-            //Console.WindowWidth = 250;
+            Console.WindowHeight = SCREEN_HEIGHT;
+            Console.WindowWidth = 120;
         }
 
         public void Render()
         {
             render3D.Show();
-
-            /*double radians = render3D.DecToRad(a + hero.direction);
-            int endX = (int)(hero.x + 50 * Math.Sin(radians));
-            int endY = (int)(hero.y + 50 * Math.Cos(radians));
-            renderMap.DrawLine(endX, endY);
-
-            double radians1 = render3D.DecToRad(a+90 + hero.direction);
-            int endX1 = (int)(hero.x + 50 * Math.Sin(radians1));
-            int endY1 = (int)(hero.y + 50 * Math.Cos(radians1));
-            renderMap.DrawLine(endX1, endY1);
-
-            renderMap.Show();*/
 
             char key = Console.ReadKey().KeyChar;
 

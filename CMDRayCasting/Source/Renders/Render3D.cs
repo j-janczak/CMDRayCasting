@@ -10,50 +10,52 @@ namespace CMDRayCasting.Renders
     {
         private readonly Map mapFile;
         private Hero hero;
-        private readonly int fov = 80;
-        private readonly int bufforHeight = 46;
+        private readonly int fov = 60;
+        private readonly int screenWidth = RayCasting.SCREEN_WIDTH - 5;
+        private readonly int screenHeight = RayCasting.SCREEN_HEIGHT - 5;
         private char[,] buffor;
 
         public Render3D(Map m, Hero h)
         {
             mapFile = m;
             hero = h;
-            buffor = new char[(int)fov, bufforHeight];
+            buffor = new char[screenWidth, screenHeight];
         }
 
         public void Show()
         {
             ResetBuffor();
 
-            int ray = hero.direction - fov / 2;
-            int rayEnd = hero.direction + fov / 2;
-            int loop = 1;
+            double ray = hero.direction - fov / 2;
+            double rayEnd = hero.direction + fov / 2;
+            double rayAngle = 0;
+            double rayIncrement = (double)fov / (double)screenWidth;
 
-            while (ray < rayEnd)
+            for (int screenPosition = 0; screenPosition < screenWidth; screenPosition++)
             {
                 double radians = DecToRad(ray);
                 int endX = (int)(hero.x + 50 * Math.Sin(radians));
                 int endY = (int)(hero.y + 50 * Math.Cos(radians));
 
                 double correction = 1.0;
-                correction = Math.Cos(DecToRad2(fov / 2 - loop));
+                correction = Math.Cos(DecToRad2((double)fov / 2 - rayAngle));
 
                 int dis = (int)CastRay(hero.x, hero.y, endX, endY);
-                int disC = (int)(CastRay(hero.x, hero.y, endX, endY) * correction);
+                double disC = (double)CastRay(hero.x, hero.y, endX, endY) * correction;
 
-                //System.Diagnostics.Debug.WriteLine(correction + " = " + loop);
+                DrawOnBuffor((int)dis, screenPosition, correction);
 
-                DrawOnBuffor(disC, loop-1);
+                rayAngle += rayIncrement;
+                ray += rayIncrement;
 
-                loop++;
-                ray++;
+                //System.Diagnostics.Debug.WriteLine(rayAngle);
             }
-            //System.Environment.Exit(0);
+            //System.Environment.Exit(1);
 
             string screen = "";
-            for (int y = 0; y < bufforHeight; y++)
+            for (int y = 0; y < screenHeight; y++)
             {
-                for (int x = 0; x < fov; x++)
+                for (int x = 0; x < screenWidth; x++)
                 {
                     screen += buffor[x, y];
                 }
@@ -64,29 +66,31 @@ namespace CMDRayCasting.Renders
             Console.Write(screen);
         }
 
-        private void DrawOnBuffor(int length, int position)
+        private void DrawOnBuffor(int length, int position, double correction)
         {
-            int height = bufforHeight - length;
+            int height = (int)(screenHeight - length);
             if (height < 0) height = 0;
 
-            if (height > bufforHeight) height = bufforHeight - 1;
+            height = (int)((double)height / correction);
 
-            int startPosition = bufforHeight / 2 - height / 2;
+            if (height > screenHeight) height = screenHeight - 1;
+
+            int startPosition = screenHeight / 2 - height / 2;
             for (int y = startPosition; y <= height; y++)
             {
-                if (height > bufforHeight - 1) height = bufforHeight - 1;
-                if (height > 35) buffor[position, y] = '█';
-                else if (height > 28) buffor[position, y] = '▓';
-                else if (height > 22) buffor[position, y] = '▒';
+                if (y > screenHeight-1) y = screenHeight - 1;
+                if(height > screenHeight * 0.7) buffor[position, y] = '█';
+                else if(height > screenHeight * 0.5) buffor[position, y] = '▓';
+                else if(height > screenHeight * 0.3) buffor[position, y] = '▒';
                 else buffor[position, y] = '░';
             }
         }
 
         private void ResetBuffor()
         {
-            for (int y = 0; y < bufforHeight; y++)
+            for (int y = 0; y < screenHeight; y++)
             {
-                for (int x = 0; x < fov; x++)
+                for (int x = 0; x < screenWidth; x++)
                 {
                     buffor[x, y] = ' ';
                 }
@@ -100,22 +104,22 @@ namespace CMDRayCasting.Renders
             double x = hero.x, y = hero.y;
             if (hero.x < endx)
             {
-                xi = 0.2;
+                xi = 0.1;
                 dx = endx - hero.x;
             }
             else
             {
-                xi = -0.2;
+                xi = -0.1;
                 dx = hero.x - endx;
             }
             if (hero.y < endy)
             {
-                yi = 0.2;
+                yi = 0.1;
                 dy = endy - hero.y;
             }
             else
             {
-                yi = -0.2;
+                yi = -0.1;
                 dy = hero.y - endy;
             }
             if (dx > dy)
@@ -176,6 +180,11 @@ namespace CMDRayCasting.Renders
         }
 
         public double DecToRad2(int dec)
+        {
+            return (dec * Math.PI / 180);
+        }
+
+        public double DecToRad2(double dec)
         {
             return (dec * Math.PI / 180);
         }

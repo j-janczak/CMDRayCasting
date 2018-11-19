@@ -10,7 +10,6 @@ namespace CMDRayCasting.Renders
     {
         private readonly Map mapFile;
         private Hero hero;
-        private readonly int fov = 60;
         private readonly int screenWidth = RayCasting.SCREEN_WIDTH - 5;
         private readonly int screenHeight = RayCasting.SCREEN_HEIGHT - 5;
         private char[,] buffor;
@@ -26,31 +25,26 @@ namespace CMDRayCasting.Renders
         {
             ResetBuffor();
 
-            double ray = hero.direction - fov / 2;
-            double rayEnd = hero.direction + fov / 2;
+            double ray = hero.direction - RayCasting.FOV / 2;
+            double rayEnd = hero.direction + RayCasting.FOV / 2;
             double rayAngle = 0;
-            double rayIncrement = (double)fov / (double)screenWidth;
+            double rayIncrement = (double)RayCasting.FOV / (double)screenWidth;
 
             for (int screenPosition = 0; screenPosition < screenWidth; screenPosition++)
             {
-                double radians = DecToRad(ray);
+                double radians = RayCasting.DecToRadCorrected(ray);
                 int endX = (int)(hero.x + 50 * Math.Sin(radians));
                 int endY = (int)(hero.y + 50 * Math.Cos(radians));
 
                 double correction = 1.0;
-                correction = Math.Cos(DecToRad2((double)fov / 2 - rayAngle));
+                correction = Math.Cos(RayCasting.DecToRad((double)RayCasting.FOV / 2 - rayAngle));
 
-                int dis = (int)CastRay(hero.x, hero.y, endX, endY);
-                double disC = (double)CastRay(hero.x, hero.y, endX, endY) * correction;
-
-                DrawOnBuffor((int)dis, screenPosition, correction);
+                int distance = (int)CastRay(hero.x, hero.y, endX, endY);
+                DrawOnBuffor(distance, screenPosition, correction);
 
                 rayAngle += rayIncrement;
                 ray += rayIncrement;
-
-                //System.Diagnostics.Debug.WriteLine(rayAngle);
             }
-            //System.Environment.Exit(1);
 
             string screen = "";
             for (int y = 0; y < screenHeight; y++)
@@ -73,15 +67,16 @@ namespace CMDRayCasting.Renders
 
             height = (int)((double)height / correction);
 
-            if (height > screenHeight) height = screenHeight - 1;
+            if (height > screenHeight-1) height = screenHeight - 2;
 
             int startPosition = screenHeight / 2 - height / 2;
             for (int y = startPosition; y <= height; y++)
             {
-                if (y > screenHeight-1) y = screenHeight - 1;
-                if(height > screenHeight * 0.7) buffor[position, y] = '█';
-                else if(height > screenHeight * 0.5) buffor[position, y] = '▓';
-                else if(height > screenHeight * 0.3) buffor[position, y] = '▒';
+                if (y < 0) y = 0;
+                if (y > screenHeight) y = screenHeight - 1;
+                if(height > screenHeight * 0.8) buffor[position, y] = '█';
+                else if(height > screenHeight * 0.7) buffor[position, y] = '▓';
+                else if(height > screenHeight * 0.6) buffor[position, y] = '▒';
                 else buffor[position, y] = '░';
             }
         }
@@ -97,7 +92,8 @@ namespace CMDRayCasting.Renders
             }
         }
 
-        private double CastRay(int startx, int starty, int endx, int endy)
+        //----------------------Bresenham's line algorithm----------------------
+        private double CastRay(double startx, double starty, int endx, int endy)
         {
             int d, dx, dy, ai, bi;
             double xi, yi;
@@ -105,22 +101,22 @@ namespace CMDRayCasting.Renders
             if (hero.x < endx)
             {
                 xi = 0.1;
-                dx = endx - hero.x;
+                dx = (int)(endx - hero.x);
             }
             else
             {
                 xi = -0.1;
-                dx = hero.x - endx;
+                dx = (int)(hero.x - endx);
             }
             if (hero.y < endy)
             {
                 yi = 0.1;
-                dy = endy - hero.y;
+                dy = (int)(endy - hero.y);
             }
             else
             {
                 yi = -0.1;
-                dy = hero.y - endy;
+                dy = (int)(hero.y - endy);
             }
             if (dx > dy)
             {
@@ -165,28 +161,6 @@ namespace CMDRayCasting.Renders
                 }
             }
             return -1;
-        }
-
-        public double DecToRad(int dec)
-        {
-            dec += 180;
-            return -(dec * Math.PI / 180);
-        }
-
-        public double DecToRad(double dec)
-        {
-            dec += 180;
-            return -(dec * Math.PI / 180);
-        }
-
-        public double DecToRad2(int dec)
-        {
-            return (dec * Math.PI / 180);
-        }
-
-        public double DecToRad2(double dec)
-        {
-            return (dec * Math.PI / 180);
         }
     }
 }

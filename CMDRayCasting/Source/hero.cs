@@ -8,11 +8,18 @@ namespace CMDRayCasting
 {
     class Hero
     {
-        public int x = 17;
-        public int y = 12;
-        public int direction = 90;
+        public double x = 25;
+        public double y = 25;
+        public int direction = 0;
         public char mark = '@';
 
         public Hero() { }
+
+        public void Walk(int distance, int direction)
+        {
+            double radians = RayCasting.DecToRadCorrected(direction);
+            x = x + distance * Math.Sin(radians);
+            y = y + distance * Math.Cos(radians);
+        }
     }
 }

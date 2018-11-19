@@ -24,6 +24,7 @@ namespace CMDRayCasting
             render2D = new Renders.Render2D(map, hero);
             render3D = new Renders.Render3D(map, hero);
             Console.WindowHeight = SCREEN_HEIGHT + Renders.Render2D.RENDER_HEIGHT + 2;
+            Console.CursorVisible = false;
         }
 
         public void Render()

@@ -1,6 +1,6 @@
 ﻿namespace CMDRayCasting
 {
-    class Map
+    public class Map
     {
         public readonly int mapHeight;
         public readonly int mapWidth;

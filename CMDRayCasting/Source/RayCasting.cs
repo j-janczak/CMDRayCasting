@@ -35,10 +35,10 @@ namespace CMDRayCasting
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
 
-                if (key == ConsoleKey.W) hero.Walk(1, hero.direction);
-                if (key == ConsoleKey.S) hero.Walk(-1, hero.direction);
-                if (key == ConsoleKey.D) hero.Walk(1, hero.direction + 90);
-                if (key == ConsoleKey.A) hero.Walk(1, hero.direction - 90);
+                if (key == ConsoleKey.W) hero.Walk(1, hero.direction, map);
+                if (key == ConsoleKey.S) hero.Walk(-1, hero.direction, map);
+                if (key == ConsoleKey.D) hero.Walk(1, hero.direction + 90, map);
+                if (key == ConsoleKey.A) hero.Walk(1, hero.direction - 90, map);
 
                 if (key == ConsoleKey.R)
                 {

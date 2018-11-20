@@ -28,38 +28,35 @@ namespace CMDRayCasting
 
         public void Render()
         {
-            if(toogleRender) render3D.Show();
+            if (toogleRender) render3D.Show();
             else render2D.Show();
 
-            if (Console.KeyAvailable)
+            ConsoleKey key = Console.ReadKey(true).Key;
+
+            if (key == ConsoleKey.W) hero.Walk(1, hero.direction, map);
+            if (key == ConsoleKey.S) hero.Walk(-1, hero.direction, map);
+            if (key == ConsoleKey.D) hero.Walk(1, hero.direction + 90, map);
+            if (key == ConsoleKey.A) hero.Walk(1, hero.direction - 90, map);
+
+            if (key == ConsoleKey.R)
             {
-                ConsoleKey key = Console.ReadKey(true).Key;
+                toogleRender = !toogleRender;
+                hero.direction = 0;
+                Console.Clear();
+            }
 
-                if (key == ConsoleKey.W) hero.Walk(1, hero.direction, map);
-                if (key == ConsoleKey.S) hero.Walk(-1, hero.direction, map);
-                if (key == ConsoleKey.D) hero.Walk(1, hero.direction + 90, map);
-                if (key == ConsoleKey.A) hero.Walk(1, hero.direction - 90, map);
+            if (key == ConsoleKey.UpArrow) render3D.fov += 1;
+            if (key == ConsoleKey.DownArrow) render3D.fov -= 1;
 
-                if (key == ConsoleKey.R)
-                {
-                    toogleRender = !toogleRender;
-                    hero.direction = 0;
-                    Console.Clear();
-                }
-
-                if (key == ConsoleKey.UpArrow) render3D.fov += 1;
-                if (key == ConsoleKey.DownArrow) render3D.fov -= 1;
-
-                if (key == ConsoleKey.LeftArrow)
-                {
-                    hero.direction -= 5;
-                    if (hero.direction == -5) hero.direction = 355;
-                }
-                if (key == ConsoleKey.RightArrow)
-                {
-                    hero.direction += 5;
-                    if (hero.direction == 360) hero.direction = 0;
-                }
+            if (key == ConsoleKey.LeftArrow)
+            {
+                hero.direction -= 5;
+                if (hero.direction == -5) hero.direction = 355;
+            }
+            if (key == ConsoleKey.RightArrow)
+            {
+                hero.direction += 5;
+                if (hero.direction == 360) hero.direction = 0;
             }
         }
 

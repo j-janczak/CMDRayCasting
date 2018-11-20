@@ -6,6 +6,7 @@ Check it out on [Wikipedia](https://en.wikipedia.org/wiki/Ray_casting)
 * Move - W,A,S,D
 * Look around - Left and Right arrow
 * Change FOV - Up and Down arrow
+* Toggle 2D or 3D View - R
 ### Screenshots
 ![Screenshot1](Screenshots/fCVLpf4.png)
 ![Screenshot2](Screenshots/fQZIPUy.png)

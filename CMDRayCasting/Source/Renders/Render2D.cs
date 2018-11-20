@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMDRayCasting.Renders
 {
     class Render2D
     {
-        public static int RENDER_WIDTH = 30;
-        public static int RENDER_HEIGHT = 20;
+        public int screenWidth = 50;
+        public int screenHeight = 35;
 
         private readonly Map mapFile;
         private Hero hero;
@@ -36,23 +32,29 @@ namespace CMDRayCasting.Renders
 
         public void Show()
         {
-            string tempBuffor = "";
-
             PutMark(hero.mark, hero.x, hero.y);
 
-            for (int y = (int)(hero.y - RENDER_HEIGHT / 2); y <= hero.y + RENDER_HEIGHT / 2; y++)
+            string screen = "╔";
+            for (int x = 0; x < screenWidth+1; x++) screen += '═';
+            screen += "╗\n";
+
+            for (int y = (int)(hero.y - screenHeight / 2); y <= hero.y + screenHeight / 2; y++)
             {
-                for (int x = (int)(hero.x - RENDER_WIDTH / 2); x <= hero.x + RENDER_WIDTH / 2; x++)
+                screen += "║";
+                for (int x = (int)(hero.x - screenWidth / 2); x <= hero.x + screenWidth / 2; x++)
                 {
-                    if (x == (int)hero.x - RENDER_WIDTH / 2 || x == (int)hero.x + RENDER_WIDTH / 2 || y == (int)hero.y - RENDER_HEIGHT / 2 || y == (int)hero.y + RENDER_HEIGHT / 2) tempBuffor += "█";
-                    else if (x < 0 || x >= mapFile.mapWidth || y < 0 || y >= mapFile.mapHeight) tempBuffor += " ";
-                    else tempBuffor += buffor[x, y];
+                    if (x < 0 || x >= mapFile.mapWidth || y < 0 || y >= mapFile.mapHeight) screen += " ";
+                    else screen += buffor[x, y];
                 }
-                tempBuffor += "\n";
+                screen += "║\n";
             }
-            tempBuffor += "x: " + (int)hero.x + " y: " + (int)hero.y + " °: " + hero.direction + "   ";
-            Console.SetCursorPosition(0, RayCasting.SCREEN_HEIGHT);
-            Console.Write(tempBuffor);
+            screen += "╚";
+            for (int x = 0; x < screenWidth+1; x++) screen += '═';
+            screen += "╝\n";
+            string debug = "X: " + (int)hero.x + " Y: " + (int)hero.y + " Rotation: " + (int)hero.direction + "    ";
+
+            Console.SetCursorPosition(0, 0);
+            Console.Write(screen + debug);
             ResetBuffor();
         }
 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMDRayCasting.Renders
 {
@@ -12,7 +8,8 @@ namespace CMDRayCasting.Renders
         private Hero hero;
         private readonly int screenWidth = RayCasting.SCREEN_WIDTH - 5;
         private readonly int screenHeight = RayCasting.SCREEN_HEIGHT - 5;
-        private char[,] buffor;
+        private readonly char[,] buffor;
+        public int fov = RayCasting.FOV;
 
         public Render3D(Map m, Hero h)
         {
@@ -25,10 +22,10 @@ namespace CMDRayCasting.Renders
         {
             ResetBuffor();
 
-            double ray = hero.direction - RayCasting.FOV / 2;
-            double rayEnd = hero.direction + RayCasting.FOV / 2;
+            double ray = hero.direction - fov / 2;
+            double rayEnd = hero.direction + fov / 2;
             double rayAngle = 0;
-            double rayIncrement = (double)RayCasting.FOV / (double)screenWidth;
+            double rayIncrement = (double)fov / (double)screenWidth;
 
             for (int screenPosition = 0; screenPosition < screenWidth; screenPosition++)
             {
@@ -37,47 +34,56 @@ namespace CMDRayCasting.Renders
                 int endY = (int)(hero.y + 50 * Math.Cos(radians));
 
                 double correction = 1.0;
-                correction = Math.Cos(RayCasting.DecToRad((double)RayCasting.FOV / 2 - rayAngle));
+                correction = Math.Cos(RayCasting.DecToRad((double)fov / 2 - rayAngle));
 
                 int distance = (int)CastRay(hero.x, hero.y, endX, endY);
-                DrawOnBuffor(distance, screenPosition, correction);
+                int distanceC = (int)(CastRay(hero.x, hero.y, endX, endY) * correction);
+                DrawOnBuffor(distanceC, screenPosition, correction);
 
                 rayAngle += rayIncrement;
                 ray += rayIncrement;
             }
 
-            string screen = "";
+            string screen = "╔";
+            for (int x = 0; x < screenWidth; x++) screen += '═';
+            screen += "╗\n";
+
             for (int y = 0; y < screenHeight; y++)
             {
+                screen += "║";
                 for (int x = 0; x < screenWidth; x++)
                 {
                     screen += buffor[x, y];
                 }
-                screen += "\n";
+                screen += "║\n";
             }
+            screen += "╚";
+            for (int x = 0; x < screenWidth; x++) screen += '═';
+            screen += "╝\n";
+
+            string debug = "X: " + (int)hero.x + " Y: " + (int)hero.y + " Rotation: " + (int)hero.direction + " fov: " + fov + "    ";
 
             Console.SetCursorPosition(0, 0);
-            Console.Write(screen);
+            Console.Write(screen + debug);
         }
 
         private void DrawOnBuffor(int length, int position, double correction)
         {
-            int height = (int)(screenHeight - length);
-            if (height < 0) height = 0;
-
-            height = (int)((double)height / correction);
-
-            if (height > screenHeight-1) height = screenHeight - 2;
+            int height;
+            if (length > 0) height = (int)Math.Ceiling(screenHeight / (length / 6.2));
+            else height = length;
 
             int startPosition = screenHeight / 2 - height / 2;
-            for (int y = startPosition; y <= height; y++)
+            for (int y = startPosition; y <= startPosition + height; y++)
             {
-                if (y < 0) y = 0;
-                if (y > screenHeight) y = screenHeight - 1;
-                if(height > screenHeight * 0.8) buffor[position, y] = '█';
-                else if(height > screenHeight * 0.7) buffor[position, y] = '▓';
-                else if(height > screenHeight * 0.6) buffor[position, y] = '▒';
-                else buffor[position, y] = '░';
+                int tmpY = y;
+                if (tmpY < 0) continue;
+                if (tmpY > screenHeight - 1) break;
+
+                if (height > screenHeight * 0.6) buffor[position, tmpY] = '█';
+                else if (height > screenHeight * 0.4) buffor[position, tmpY] = '▓';
+                else if (height > screenHeight * 0.2) buffor[position, tmpY] = '▒';
+                else buffor[position, tmpY] = '░';
             }
         }
 
@@ -98,24 +104,25 @@ namespace CMDRayCasting.Renders
             int d, dx, dy, ai, bi;
             double xi, yi;
             double x = hero.x, y = hero.y;
+            double add = 0.1;
             if (hero.x < endx)
             {
-                xi = 0.1;
+                xi = add;
                 dx = (int)(endx - hero.x);
             }
             else
             {
-                xi = -0.1;
+                xi = -add;
                 dx = (int)(hero.x - endx);
             }
             if (hero.y < endy)
             {
-                yi = 0.1;
+                yi = add;
                 dy = (int)(endy - hero.y);
             }
             else
             {
-                yi = -0.1;
+                yi = -add;
                 dy = (int)(hero.y - endy);
             }
             if (dx > dy)

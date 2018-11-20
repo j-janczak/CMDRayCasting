@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMDRayCasting
 {
-    class Hero
+    public class Hero
     {
-        public double x = 25;
-        public double y = 25;
-        public int direction = 0;
+        public double x = 41;
+        public double y = 41;
+        public int direction = 180;
         public char mark = '@';
-
-        public Hero() { }
 
         public void Walk(int distance, int direction)
         {
